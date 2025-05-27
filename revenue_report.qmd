@@ -1,0 +1,61 @@
+---
+title: "Revenue Report"
+author: "Zach Tallevast"
+format:
+  html: default
+  pdf: default
+params:
+  num_days: 30
+---
+
+## 🧾 Setup
+
+```{r setup, include=FALSE}
+library(tidyverse)
+set.seed(123)
+# You mau need tinytex. 
+# in bash --> quarto install tinytex 
+```
+
+### 📋 Revenue Data (`r params$num_days` Days)
+
+```{r generate-data}
+# Generate the simulated revenue data
+revenue_data <- tibble(
+  Date = seq(as.Date("2025-01-01"), by = "day", length.out = params$num_days),
+  Revenue = round(runif(params$num_days, 50, 200), 2)
+)
+
+# Display the first few rows
+head(revenue_data)
+```
+```{r generate-plot}
+# Line and point plot of revenue over time
+ggplot(revenue_data, aes(x = Date, y = Revenue)) +
+  geom_line(color = "darkblue", linewidth = 1.2) +
+  geom_point(color = "firebrick") +
+  labs(
+    title = paste("Revenue Over", params$num_days, "Days"),
+    y = "Revenue ($)",
+    x = "Date"
+  ) +
+  theme_minimal()
+```
+```{r generate-stats}
+# Compute summary statistics
+revenue_data |>
+  summarise(
+    Total_Revenue = sum(Revenue),
+    Avg_Revenue = mean(Revenue),
+    Max_Revenue = max(Revenue),
+    Min_Revenue = min(Revenue)
+  )
+
+
+  #quarto render revenue_report.qmd --to pdf --execute --params num_days:60
+#quarto render revenue_report.qmd
+```
+  
+
+
+
